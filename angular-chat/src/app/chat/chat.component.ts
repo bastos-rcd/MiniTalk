@@ -14,6 +14,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     username: string = '';
     users: string[] = [];
     messages: Message[] = [];
+    typingUsers: string[] = [];
     private subscriptions: Subscription[] = [];
 
     constructor(
@@ -38,6 +39,18 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.subscriptions.push(
             this.messageService.onMessage().subscribe(msg => {
                 this.messages.push(msg);
+            })
+        );
+
+        this.subscriptions.push(
+            this.chatService.onTyping().subscribe(data => {
+                if (data.isTyping) {
+                    if (!this.typingUsers.includes(data.user)) {
+                        this.typingUsers.push(data.user);
+                    }
+                } else {
+                    this.typingUsers = this.typingUsers.filter(u => u !== data.user);
+                }
             })
         );
     }

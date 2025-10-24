@@ -14,6 +14,15 @@
             <app-message-list [messages]="messages"></app-message-list>
         </div>
 
+        <div *ngIf="typingUsers.length" class="text-muted fst-italic mt-2">
+            <ng-container *ngIf="typingUsers.length === 1">
+                {{ typingUsers[0] }} est en train d’écrire...
+            </ng-container>
+            <ng-container *ngIf="typingUsers.length > 1">
+                {{ typingUsers.join(', ') }} sont en train d’écrire...
+            </ng-container>
+        </div>
+
         <div class="p-3 border-top bg-light">
             <app-message-input (send)="sendMessage($event)"></app-message-input>
         </div>

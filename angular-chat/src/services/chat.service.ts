@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 
 import { User } from "../models/user.model";
 import { Importance, Message } from "../models/message.model";
+import { Typing } from "../models/typing.model";
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +34,16 @@ export class ChatService {
         return new Observable(observer => {
             this.socket.on('userList', (list: string[]) => observer.next(list));
         });
+    }
+
+    onTyping(): Observable<Typing> {
+        return new Observable(observer => {
+            this.socket.on('typing', (data: Typing) => observer.next(data));
+        });
+    }
+
+    emitTyping(isTyping: boolean) {
+        this.socket.emit('typing', isTyping);
     }
 
     sendMessage(message: string, importance: Importance = 'normal', color: string = '#000000'): void {
