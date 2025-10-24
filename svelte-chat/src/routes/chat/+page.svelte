@@ -8,10 +8,12 @@
   import MessageList from "$lib/components/MessageList.svelte";
   import type { Message } from "$lib/models/message";
   import MessageInput from "$lib/components/MessageInput.svelte";
+  import TypingIndicator from "$lib/components/TypingIndicator.svelte";
 
   let socket: any;
   let users: User[] = [];
   let messages: Message[] = [];
+  let typingUsers: string[] = [];
 
   let user = get(username);
 
@@ -39,6 +41,20 @@
     socket.on("message", (msg: Message) => {
       messages = [...messages, msg];
     });
+
+    socket.on(
+      "typing",
+      ({ user: typingUser, isTyping }: { user: string; isTyping: boolean }) => {
+        if (!typingUser || typingUser === user) return;
+
+        if (isTyping) {
+          if (!typingUsers.includes(typingUser))
+            typingUsers = [...typingUsers, typingUser];
+        } else {
+          typingUsers = typingUsers.filter((u) => u !== typingUser);
+        }
+      }
+    );
   });
 </script>
 
@@ -47,6 +63,7 @@
 
   <div class="flex-grow-1 d-flex flex-column p-3">
     <MessageList {messages} />
+    <TypingIndicator {typingUsers} />
     <MessageInput {socket} username={user!} />
   </div>
 </div>
