@@ -40,6 +40,10 @@
 
     socket.on("message", (msg: Message) => {
       messages = [...messages, msg];
+
+      if (msg.user !== user) {
+        socket.emit("delivered", { msgId: msg.id });
+      }
     });
 
     socket.on(
@@ -55,6 +59,12 @@
         }
       }
     );
+
+    socket.on("delivered", ({ msgId, by }: { msgId: number; by: string }) => {
+      messages = messages.map((m) =>
+        m.id === msgId ? { ...m, delivered: true } : m
+      );
+    });
   });
 </script>
 

@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { Importance, Message } from "$lib/models/message";
+  import { username } from "$lib/stores/user";
+  import { get } from "svelte/store";
 
   export let msg: Message;
+  let user = get(username);
 
   const importanceColor = (importance: Importance) => {
     switch (importance) {
@@ -29,7 +32,12 @@
     </div>
   </div>
 
-  <span class={`badge bg-${importanceColor(msg.importance)}`}>
-    {msg.importance.toUpperCase()}
-  </span>
+  <div class="inline-block">
+    <span class={`badge bg-${importanceColor(msg.importance)}`}>
+      {msg.importance.toUpperCase()}
+    </span>
+    {#if msg.delivered && msg.user === user}
+      <span class="text-success ms-1">✔</span>
+    {/if}
+  </div>
 </div>
