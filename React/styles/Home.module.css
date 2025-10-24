@@ -145,6 +145,7 @@
 .inputRow {
   display: flex;
   gap: 0.5rem;
+  margin : 10px;
 }
 
 .messageInput {
@@ -166,4 +167,11 @@
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
 }
+
+.typingIndicator {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-left: 10px;
+  font-style: italic;
+} 
 

@@ -10,6 +10,9 @@ function Home() {
   const [connectedUsers, setConnectedUsers] = useState([]);
   const [socket, setSocket] = useState(null);
   const [connected, setConnected] = useState(false);
+  const [typingUsers, setTypingUsers] = useState([]);
+  const [isTyping, setIsTyping] = useState(false); 
+
 
   useEffect(() => {
     const newSocket = io("http://localhost:8080");
@@ -29,31 +32,74 @@ function Home() {
       setConnectedUsers(users);
     });
 
+    // Écouter les indicateurs de frappe
+    newSocket.on("typing", ({ user, isTyping }) => {
+      setTypingUsers(prev => {
+        // Enlever l'utilisateur de la liste existante
+        const updatedList = prev.filter(u => u !== user);
+        
+        // Si il tape, l'ajouter à la liste
+        if (isTyping) {
+          return [...updatedList, user];
+        }
+        
+        // Sinon, retourner la liste sans lui
+        return updatedList;
+      });
+    });
+
     return () => {
       newSocket.disconnect();
     };
   }, []);
 
   const handleSubmit = () => {
-    if (name.trim() === "") return;
-    socket.emit("join", name);
+    if (name.trim() === "" || !socket) return;
+    setName(name.trim());
+    socket.emit("join", name.trim());
     setConnected(true);
   };
 
   const handleMessageSend = () => {
-    if (messageText.trim() === "") return;
+    if (messageText.trim() === "" || !socket) return;
+    
+    if (isTyping) {
+      socket.emit("typing", false);
+      setIsTyping(false);
+    }
+    
     socket.emit("message", {
-      user: name,
-      message: messageText,
-      importance: "normal",
-      color: "black",
-      timestamp: Date.now(),
+       message: messageText.trim(),
+       importance: "normal",
+       color: "black",
     });
     setMessageText("");
   };
 
+  const handleInputChange = (e) => {
+    const newValue = e.target.value;
+    setMessageText(newValue);
+
+    if (!socket) return;
+    
+    if (newValue.trim() !== "") {
+      socket.emit("typing", true);
+      setIsTyping(true);
+    }
+
+    else if (newValue.trim() === "" ) {
+      socket.emit("typing", false);
+      setIsTyping(false);
+    }
+  };
+
   const messagesList = messages.map((msg, key) => (
-    <Message key={key} user={msg.user} message={msg.text} time={msg.timestamp} />
+    <Message
+      key={key}
+      user={msg.user}
+      message={msg.text}
+      time={msg.timestamp}
+    />
   ));
 
   const handleKeyPress = (e) => {
@@ -98,7 +144,16 @@ function Home() {
 
           <div className={styles.chatMain}>
             <div className={styles.messagesContainer}>
-              <div className={styles.messages}>{messagesList}</div>
+              <div className={styles.messages}>
+                {messagesList}
+                
+                {/* Afficher qui tape (autres utilisateurs) */}
+                {typingUsers.length > 0 && (
+                  <div className={styles.typingIndicator}>
+                    {typingUsers.join(', ')} {typingUsers.length === 1 ? 'tape' : 'tapent'}...
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className={styles.sidebar}>
@@ -106,22 +161,22 @@ function Home() {
               <ul className={styles.usersList}>
                 {connectedUsers.map((user, index) => (
                   <li key={index} className={styles.userItem}>
-                      {user}
-                      <span className={styles.userStatus}></span>
+                    {user}
+                    <span className={styles.userStatus}></span>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
-
           <div className={styles.inputRow}>
             <input
               type="text"
               placeholder="Tapez votre message..."
-              onChange={(e) => setMessageText(e.target.value)}
+              onChange={handleInputChange}
               value={messageText}
               className={styles.messageInput}
               onKeyPress={handleKeyPress}
+              maxLength={500}
             />
             <button onClick={handleMessageSend} className={styles.sendButton}>
               Envoyer
