@@ -1,0 +1,25 @@
+.scrollable {
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+.scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.05);
+}

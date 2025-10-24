@@ -1,0 +1,30 @@
+<div class="d-flex w-100 vh-100">
+    <div class="text-center w-25 p-4 border-end border-dark scrollable">
+        <h5>Utilisateurs en ligne</h5>
+
+        <ul class="list-group pt-4">
+            <li *ngFor="let user of users" class="list-group-item">
+                {{ user }}
+            </li>
+        </ul>
+    </div>
+
+    <div class="w-75 d-flex flex-column p-4 ">
+        <div class="flex-grow-1 p-4 scrollable">
+            <app-message-list [messages]="messages"></app-message-list>
+        </div>
+
+        <div *ngIf="typingUsers.length" class="text-muted fst-italic mt-2">
+            <ng-container *ngIf="typingUsers.length === 1">
+                {{ typingUsers[0] }} est en train d’écrire...
+            </ng-container>
+            <ng-container *ngIf="typingUsers.length > 1">
+                {{ typingUsers.join(', ') }} sont en train d’écrire...
+            </ng-container>
+        </div>
+
+        <div class="p-3 border-top bg-light">
+            <app-message-input (send)="sendMessage($event)"></app-message-input>
+        </div>
+    </div>
+</div>
