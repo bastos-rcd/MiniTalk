@@ -3,3 +3,5 @@
 .angular/
 node_modules/
 package-lock.json
+
+.svelte-kit/
