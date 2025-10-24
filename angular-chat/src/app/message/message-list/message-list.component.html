@@ -1,0 +1,18 @@
+<div *ngFor="let msg of messages" class="mb-3 border-bottom pb-2">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <small class="text-muted">{{ msg.timestamp | date: 'shortTime' }}</small>
+
+        <span class="badge" [ngClass]="{
+            'bg-secondary': msg.importance === 'normal',
+            'bg-warning text-dark': msg.importance === 'important',
+            'bg-danger': msg.importance === 'urgent'
+          }">
+            {{ msg.importance | titlecase }}
+        </span>
+    </div>
+
+    <div class="message-content">
+        <strong class="me-1">{{ msg.user }}:</strong>
+        <span [style.color]="msg.color">{{ msg.text }}</span>
+    </div>
+</div>

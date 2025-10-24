@@ -1,0 +1,14 @@
+<form (ngSubmit)="onSubmit()" class="d-flex gap-2 mt-3">
+    <input [(ngModel)]="messageText" type="text" class="form-control" id="messageText" name="messageText"
+        placeholder="Votre message..." required>
+
+    <select [(ngModel)]="importance" class="form-select w-auto" id="importance" name="importance">
+        <option value="normal">Normal</option>
+        <option value="important">Important</option>
+        <option value="urgent">Urgent</option>
+    </select>
+
+    <input [(ngModel)]="color" type="color" class="form-control form-control-color w-1" id="color" name="color">
+
+    <button [disabled]="!messageText.trim()" type="submit" class="btn btn-success">ENVOYER</button>
+</form>

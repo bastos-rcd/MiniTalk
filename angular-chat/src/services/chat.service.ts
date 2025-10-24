@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { io, Socket } from "socket.io-client";
-import { User } from "../models/user.model";
 import { Observable } from "rxjs";
+
+import { User } from "../models/user.model";
+import { Importance, Message } from "../models/message.model";
 
 @Injectable({
     providedIn: 'root'
@@ -30,6 +32,17 @@ export class ChatService {
     onUserList(): Observable<string[]> {
         return new Observable(observer => {
             this.socket.on('userList', (list: string[]) => observer.next(list));
+        });
+    }
+
+    sendMessage(message: string, importance: Importance = 'normal', color: string = '#000000'): void {
+        if (!this.socket.connected) return;
+        this.socket.emit('message', { message, importance, color });
+    }
+
+    onMessage(): Observable<Message> {
+        return new Observable(observer => {
+            this.socket.on('message', (msg: Message) => observer.next(msg));
         });
     }
 }

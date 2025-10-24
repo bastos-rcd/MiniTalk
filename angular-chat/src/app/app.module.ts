@@ -6,12 +6,16 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
+import { MessageListComponent } from './message/message-list/message-list.component';
+import { MessageInputComponent } from './message/message-input/message-input.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    ChatComponent
+    ChatComponent,
+    MessageListComponent,
+    MessageInputComponent
   ],
   imports: [
     BrowserModule,
