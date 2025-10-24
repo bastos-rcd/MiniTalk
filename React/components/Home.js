@@ -41,7 +41,7 @@ function Home() {
   };
 
   const handleMessageSend = () => {
-    if (messageText.trim() === "" || !socket) return;
+    if (messageText.trim() === "") return;
     socket.emit("message", {
       user: name,
       message: messageText,
@@ -53,7 +53,7 @@ function Home() {
   };
 
   const messagesList = messages.map((msg, key) => (
-    <Message key={key} user={msg.user} text={msg.text} time={msg.timestamp} />
+    <Message key={key} user={msg.user} message={msg.text} time={msg.timestamp} />
   ));
 
   const handleKeyPress = (e) => {
