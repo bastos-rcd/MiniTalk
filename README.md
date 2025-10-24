@@ -32,3 +32,18 @@ Application de chat avec Websocket
    ```bash
    ng serve
    ```
+
+## Lancement de Svelte
+
+1. Installer les dépendances
+
+   ```bash
+   cd svelte-chat
+   npm install
+   ```
+
+2. Démarrer l'application Svelte
+
+   ```bash
+   npm run dev
+   ```

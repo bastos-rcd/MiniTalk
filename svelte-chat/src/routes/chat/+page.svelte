@@ -5,9 +5,12 @@
   import UserList from "$lib/components/UserList.svelte";
   import { get } from "svelte/store";
   import type { User } from "$lib/models/user";
+  import MessageList from "$lib/components/MessageList.svelte";
+  import type { Message } from "$lib/models/message";
 
   let socket: any;
   let users: User[] = [];
+  let messages: Message[] = [];
 
   onMount(() => {
     const name = get(username);
@@ -29,12 +32,17 @@
     socket.io.on("reconnect", () => {
       socket.emit("join", name);
     });
+
+    socket.on("message", (msg: Message) => {
+      messages = [...messages, msg];
+    });
   });
 </script>
 
 <div class="container-fluid vh-100 d-flex p-0">
   <UserList {users} />
-  <div class="flex-grow-1 p-3">
-    <h5>Chat à venir...</h5>
+
+  <div class="flex-grow-1 d-flex flex-column p-3">
+    <MessageList {messages} />
   </div>
 </div>
