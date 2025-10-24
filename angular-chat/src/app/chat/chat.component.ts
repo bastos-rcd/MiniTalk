@@ -38,7 +38,19 @@ export class ChatComponent implements OnInit, OnDestroy {
 
         this.subscriptions.push(
             this.messageService.onMessage().subscribe(msg => {
-                this.messages.push(msg);
+                if (msg.user !== this.username) {
+                    this.messages.push(msg);
+                    this.chatService.sendDelivered(msg.id);
+                } else {
+                    this.messages.push({ ...msg, delivered: false });
+                }
+            })
+        );
+
+        this.subscriptions.push(
+            this.chatService.onDelivered().subscribe(data => {
+                const msg = this.messages.find(m => m.id === data.msgId && m.user === this.username);
+                if (msg) msg.delivered = true;
             })
         );
 

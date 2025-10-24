@@ -56,4 +56,14 @@ export class ChatService {
             this.socket.on('message', (msg: Message) => observer.next(msg));
         });
     }
+
+    onDelivered(): Observable<{ msgId: number; by: string }> {
+        return new Observable(observer => {
+            this.socket.on('delivered', (data: { msgId: number; by: string }) => observer.next(data));
+        });
+    }
+
+    sendDelivered(msgId: number) {
+        this.socket.emit('delivered', msgId);
+    }
 }

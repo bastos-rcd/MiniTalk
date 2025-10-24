@@ -2,13 +2,16 @@
     <div class="d-flex justify-content-between align-items-center mb-1">
         <small class="text-muted">{{ msg.timestamp | date: 'shortTime' }}</small>
 
-        <span class="badge" [ngClass]="{
+        <div class="d-inline-block">
+            <span class="badge" [ngClass]="{
             'bg-secondary': msg.importance === 'normal',
             'bg-warning text-dark': msg.importance === 'important',
             'bg-danger': msg.importance === 'urgent'
           }">
-            {{ msg.importance | titlecase }}
-        </span>
+                {{ msg.importance | titlecase }}
+            </span>
+            <span *ngIf="msg.user === username && msg.delivered" class="badge bg-success ms-2">✓</span>
+        </div>
     </div>
 
     <div class="message-content">

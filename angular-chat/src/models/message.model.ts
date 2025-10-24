@@ -7,4 +7,5 @@ export interface Message {
     importance: Importance;
     color: string;
     timestamp: string;
+    delivered?: boolean;
 }
