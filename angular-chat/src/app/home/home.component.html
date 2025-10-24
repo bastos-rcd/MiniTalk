@@ -1,0 +1,12 @@
+<div class="mt-5 text-center d-flex flex-column align-items-center gap-4">
+    <h2>Bienvenue sur le Chat</h2>
+
+    <form (ngSubmit)="onSubmit()">
+        <div class="form-group text-start">
+            <label for="username" class="form-label">Pseudo</label>
+            <input [(ngModel)]="username" type="text" class="form-control" id="username" name="username" required>
+        </div>
+
+        <button [disabled]="!username.trim()" type="submit" class="btn btn-success mt-4">SE CONNECTER</button>
+    </form>
+</div>
