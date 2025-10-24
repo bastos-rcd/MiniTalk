@@ -7,10 +7,13 @@
   import type { User } from "$lib/models/user";
   import MessageList from "$lib/components/MessageList.svelte";
   import type { Message } from "$lib/models/message";
+  import MessageInput from "$lib/components/MessageInput.svelte";
 
   let socket: any;
   let users: User[] = [];
   let messages: Message[] = [];
+
+  let user = get(username);
 
   onMount(() => {
     const name = get(username);
@@ -44,5 +47,6 @@
 
   <div class="flex-grow-1 d-flex flex-column p-3">
     <MessageList {messages} />
+    <MessageInput {socket} username={user!} />
   </div>
 </div>
