@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
 
+import { UserService } from "../../services/user.service";
 import { ChatService } from "../../services/chat.service";
-import { User } from "../../models/user.model";
 
 @Component({
     selector: 'app-chat',
@@ -10,24 +10,24 @@ import { User } from "../../models/user.model";
 })
 export class ChatComponent implements OnInit, OnDestroy {
     username: string = '';
-    connected: boolean = false;
     users: string[] = [];
     private subscriptions: Subscription[] = [];
 
     constructor(
+        private userService: UserService,
         private chatService: ChatService
     ) { }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        // TEMP
+        this.userService.setUser({ username: 'TemporaryUser' });
+        const user = this.userService.getUser();
 
-    onSubmit() {
-        if (!this.username.trim()) {
-            return alert("Pseudo obligatoire !");
+        if (!user) {
+            return;
         }
 
-        const user: User = { username: this.username };
-        this.chatService.connect(user);
-        this.connected = true;
+        this.username = user.username;
 
         this.subscriptions.push(
             this.chatService.onUserList().subscribe(list => this.users = list)
@@ -36,6 +36,5 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(s => s.unsubscribe());
-        this.chatService.disconnect();
     }
 }

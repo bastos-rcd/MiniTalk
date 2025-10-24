@@ -1,14 +1,13 @@
-<form *ngIf="!connected" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-        <label for="username" class="form-label">Pseudo</label>
-        <input [(ngModel)]="username" type="text" class="form-control" id="username" name="username" required>
-    </div>
-    <button type="submit" class="btn btn-success mt-4">SE CONNECTER</button>
-</form>
+<div class="d-flex w-100 vh-100">
+    <div class="text-center w-25 p-4 border-end border-dark scrollable">
+        <h5>Utilisateurs en ligne</h5>
 
-<div *ngIf="connected">
-    <h6>Liste des utilisateurs :</h6>
-    <ul class="list-group">
-        <li class="list-group-item" *ngFor="let user of users">{{user}}</li>
-    </ul>
+        <ul class="list-group pt-4">
+            <li *ngFor="let user of users" class="list-group-item">
+                {{ user }}
+            </li>
+        </ul>
+    </div>
+
+    <div class="w-75 p-4 scrollable"></div>
 </div>
