@@ -5,7 +5,10 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Next.js App</title>
+        <title>MiniTalk - Chat Instantané</title>
+        <meta name="description" content="Application de chat en temps réel avec WebSocket" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Component {...pageProps} />
     </>
