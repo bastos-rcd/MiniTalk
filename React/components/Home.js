@@ -1,5 +1,5 @@
 import styles from "../styles/Home.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import Message from "./message";
 
@@ -14,6 +14,17 @@ function Home() {
   const [isTyping, setIsTyping] = useState(false);
   const [importance, setImportance] = useState("normal");
 
+  const nameRef = useRef("");
+  const messagesEndRef = useRef(null);
+  
+  useEffect(() => {
+    nameRef.current = name;
+  }, [name]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   useEffect(() => {
     const newSocket = io("http://localhost:8080");
     setSocket(newSocket);
@@ -23,15 +34,19 @@ function Home() {
     });
 
     // Écouter les messages
-    newSocket.on("message", (message) => { 
+    newSocket.on("message", (message) => {
       setMessages((prev) => {
-        if (prev.some((m) => m.id === message.id)) return prev;
-        return [
-          ...prev,
-          { ...message, deliveredBy: message.deliveredBy || [] },
-        ];
+        const existing = prev.find((m) => m.id === message.id);
+        if (existing) {
+          return prev.map((m) =>
+            m.id === message.id ? { ...m, ...message } : m
+          );
+        } else {
+          return [...prev, { ...message, deliveredBy: [] }];
+        }
       });
-      if (message.user !== name && name && connected) {
+
+      if (message.user !== nameRef.current) {
         newSocket.emit("delivered", message.id);
       }
     });
@@ -44,30 +59,24 @@ function Home() {
     // Écouter les indicateurs de frappe
     newSocket.on("typing", ({ user, isTyping }) => {
       setTypingUsers((prev) => {
-        // Enlever l'utilisateur de la liste existante
         const updatedList = prev.filter((u) => u !== user);
-
-        // Si il tape, l'ajouter à la liste
         if (isTyping) {
           return [...updatedList, user];
         }
-
-        // Sinon, retourner la liste sans lui
         return updatedList;
       });
     });
 
     newSocket.on("delivered", ({ msgId, by }) => {
       setMessages((prevMessages) =>
-        prevMessages.map((msg) => {
-          if (msg.id === msgId) {
-            return {
-              ...msg,
-              deliveredBy: msg.deliveredBy ? [...msg.deliveredBy, by] : [by],
-            };
-          }
-          return msg;
-        })
+        prevMessages.map((msg) =>
+          msg.id === msgId
+            ? {
+                ...msg,
+                deliveredBy: [...new Set([...(msg.deliveredBy || []), by])],
+              }
+            : msg
+        )
       );
     });
 
@@ -84,25 +93,26 @@ function Home() {
   };
 
   const handleMessageSend = () => {
-    if (messageText.trim() === "" || !socket) return;
+  if (messageText.trim() === "" || !socket) return;
 
-    if (isTyping) {
-      socket.emit("typing", false);
-      setIsTyping(false);
-    }
+  if (isTyping) {
+    socket.emit("typing", false);
+    setIsTyping(false);
+  }
 
-    let messageColor = "black";
-    if (importance === "important") messageColor = "red";
-    if (importance === "urgent") messageColor = "orange";
+  let messageColor = "black";
+  if (importance === "important") messageColor = "red";
+  if (importance === "urgent") messageColor = "orange";
 
-    socket.emit("message", {
-      message: messageText.trim(),
-      importance,
-      color: messageColor,
-    });
+  socket.emit("message", {
+    id: Date.now(),
+    message: messageText.trim(),
+    importance,
+    color: messageColor,
+  });
 
-    setMessageText("");
-  };
+  setMessageText("");
+};
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
@@ -195,6 +205,8 @@ function Home() {
                     {typingUsers.length === 1 ? "tape" : "tapent"}...
                   </div>
                 )}
+                
+                <div ref={messagesEndRef} />
               </div>
             </div>
 

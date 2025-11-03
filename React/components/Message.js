@@ -1,6 +1,6 @@
 import styles from "../styles/Message.module.css";
 
-const Message = ({ user, message, time, color, deliveredBy, currentUser }) => {  
+const Message = ({ user, message, time, deliveredBy, currentUser }) => {  
   return (
     <div className={styles.message}>
       <div className={styles.messageHeader}>
@@ -9,9 +9,8 @@ const Message = ({ user, message, time, color, deliveredBy, currentUser }) => {
           {new Date(time).toLocaleTimeString()}
         </span>
       </div>
-      <div className={styles.messageText} style={{ color: color }}>
+      <div className={styles.messageText}>
         {message}
-        {/* Afficher ✅ seulement pour mes propres messages qui ont été vus */}
         {user === currentUser && deliveredBy && deliveredBy.length > 0 && (
           <span> ✅</span>
         )}
