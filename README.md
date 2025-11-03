@@ -47,3 +47,18 @@ Application de chat avec Websocket
    ```bash
    npm run dev
    ```
+
+## Lancement de Vue
+
+1. Installer les dépendances
+
+   ```bash
+   cd vue-chat
+   npm install
+   ```
+
+2. Démarrer l'application Vue
+
+   ```bash
+   npm run dev
+   ```
