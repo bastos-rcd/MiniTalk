@@ -17,6 +17,25 @@ Application de chat avec Websocket
    npm run start
    ```
 
+## Lancement de React 
+
+1. Installer les dépendances
+
+   ```bash
+   cd React
+   yarn install
+   # ou
+   npm install
+   ```
+
+2. Démarrer l'application React
+
+   ```bash
+   yarn dev
+   # ou
+   npm run dev
+   ```
+
 ## Lancement de Angular
 
 1. Installer les dépendances
